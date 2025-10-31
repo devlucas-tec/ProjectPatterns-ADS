@@ -22,23 +22,30 @@ body {
     gap: 20px;
 }
 
-/* Estilo unificado para Card de Herói e Monstro */
 .card {
     background-color: #555;
     border: 2px solid #666;
     border-radius: 8px;
     padding: 10px;
-    width: 150px;
+    width: 150px; /* Largura fixa do card */
+    min-height: 250px; /* Altura mínima para acomodar imagem e texto */
+    display: flex; /* Para alinhar melhor o conteúdo */
+    flex-direction: column;
+    justify-content: space-between; /* Empurra a descrição para baixo */
+    align-items: center;
     transition: all 0.2s ease;
 }
 
+/* ATUALIZADO: Estilos para as imagens dentro dos cards */
 .card img {
-    width: 100px;
-    height: 100px;
-    background-color: #777; /* Fica visível se a imagem falhar */
-    border-radius: 50%;
-    margin-bottom: 10px;
-    object-fit: cover;
+    width: 100%; /* Ocupa 100% da largura do card para a imagem */
+    max-width: 120px; /* Limite máximo para não ficar enorme */
+    height: auto; /* Mantém a proporção */
+    max-height: 100px; /* Altura máxima para a imagem */
+    object-fit: contain; /* Garante que a imagem inteira seja visível, sem cortar */
+    background-color: transparent; /* Remove o fundo cinza se a imagem tiver transparência */
+    margin-bottom: 5px; /* Espaço abaixo da imagem */
+    border-radius: 0; /* Removido o border-radius para imagens de personagem */
 }
 
 .card h3 {
@@ -49,7 +56,11 @@ body {
 .card p {
     font-size: 0.8rem;
     color: #ccc;
-    height: 40px;
+    height: auto; /* Ajusta a altura da descrição automaticamente */
+    flex-grow: 1; /* Permite que a descrição ocupe o espaço restante */
+    display: flex;
+    align-items: flex-end; /* Alinha a descrição na parte inferior do espaço dela */
+    text-align: center;
 }
 
 /* --- Estilos de Herói --- */
@@ -67,9 +78,7 @@ body {
     transform: scale(1.05);
 }
 
-/* --- Estilos de Monstro (Nomes em Português) --- */
-
-/* ANTES: .health-bar */
+/* --- Estilos da Barra de Vida do Monstro --- */
 .barra-vida {
     width: 100%;
     height: 20px;
@@ -78,9 +87,9 @@ body {
     border-radius: 5px;
     overflow: hidden;
     margin-top: 10px;
+    margin-bottom: 5px; /* Adicionado margem inferior */
 }
 
-/* ANTES: .health-bar-inner */
 .barra-vida-interna {
     height: 100%;
     width: 100%;
@@ -88,11 +97,11 @@ body {
     transition: width 0.3s ease;
 }
 
-/* ANTES: .attack-btn */
+/* --- Estilos do Botão de Ataque --- */
 .btn-atacar {
     width: 100%;
     padding: 8px;
-    margin-top: 10px;
+    margin-top: auto; /* Empurra o botão para a parte inferior do card */
     background-color: #a00;
     color: white;
     border: none;
@@ -143,6 +152,7 @@ body {
     100% { background-color: #555; }
 }
 
+/* --- Estilos da Barra de Vida do Herói --- */
 .barra-vida-heroi {
     height: 10px; /* Mais fina que a do monstro */
     margin-top: 5px;
