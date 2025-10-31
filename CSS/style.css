@@ -142,3 +142,28 @@ body {
     50% { background-color: #00d; }
     100% { background-color: #555; }
 }
+
+.barra-vida-heroi {
+    height: 10px; /* Mais fina que a do monstro */
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: #222;
+}
+
+.barra-vida-interna-heroi {
+    background-color: #0d0; /* Verde, em vez de vermelho */
+    width: 100%;
+}
+
+/* --- Estilo de Herói Morto --- */
+#hero-selection .card.dead {
+    opacity: 0.4;
+    filter: grayscale(1);
+    border-color: #111;
+    cursor: not-allowed;
+}
+
+#hero-selection .card.dead.selected {
+    box-shadow: none;
+    transform: none;
+}

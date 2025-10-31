@@ -2,8 +2,6 @@
 import { GerenciadorUI } from './ui.js';
 
 // --- Classes Base do Padrão ---
-
-// O "Sujeito" (Subject)
 export class Observavel {
     constructor() {
         this.observadores = [];
@@ -15,8 +13,6 @@ export class Observavel {
         this.observadores.forEach(observador => observador.atualizar(dados));
     }
 }
-
-// O "Observador" (Observer)
 export class Observador {
     atualizar(dados) {
         throw new Error("O método atualizar() deve ser implementado.");
@@ -25,13 +21,13 @@ export class Observador {
 
 // --- Implementações Concretas ---
 
-// Observador 1: Atualiza a UI (Vida, Efeitos)
+// Observador 1: Atualiza a UI do MONSTRO (Sem alterações)
 export class ObservadorVidaUI extends Observador {
     constructor(idMonstro, gerenciadorSom) {
         super();
         this.elementoMonstro = document.getElementById(idMonstro);
         this.elementoBarraVida = this.elementoMonstro.querySelector('.barra-vida-interna');
-        this.gerenciadorSom = gerenciadorSom; // Injeção de Dependência
+        this.gerenciadorSom = gerenciadorSom;
     }
 
     atualizar(dados) {
@@ -48,15 +44,38 @@ export class ObservadorVidaUI extends Observador {
     }
 }
 
-// Observador 2: Atualiza a Lógica do Jogo
+// NOVO OBSERVADOR: Atualiza a UI do HERÓI
+export class ObservadorVidaHeroiUI extends Observador {
+    constructor(idHeroi) {
+        super();
+        this.elementoHeroi = document.getElementById(idHeroi);
+        this.elementoBarraVida = this.elementoHeroi.querySelector('.barra-vida-interna-heroi');
+    }
+
+    atualizar(dados) {
+        if (dados.tipo === 'ATUALIZACAO_VIDA_HEROI' && dados.heroi.id === this.elementoHeroi.id) {
+            const heroi = dados.heroi;
+            const percentual = (heroi.vidaAtual / heroi.vidaMaxima) * 100;
+            this.elementoBarraVida.style.width = `${percentual}%`;
+            // O 'dados.efeito' (damage-hit ou damage-recoil) é passado pela entidade
+            GerenciadorUI.mostrarEfeitoDano(heroi.id, dados.efeito);
+
+        } else if (dados.tipo === 'MORTE_HEROI' && dados.heroi.id === this.elementoHeroi.id) {
+            this.elementoHeroi.classList.add('dead');
+            // Você pode adicionar um som de morte de herói aqui se quiser
+        }
+    }
+}
+
+
+// Observador 3: Atualiza a Lógica do Jogo (Sem alterações)
 export class ObservadorLogicaJogo extends Observador {
     constructor(gerenciadorJogo) {
         super();
-        this.gerenciadorJogo = gerenciadorJogo; // Injeção de Dependência
+        this.gerenciadorJogo = gerenciadorJogo;
     }
     atualizar(dados) {
         if (dados.tipo === 'MORTE') {
-            // Avisa o GerenciadorJogo para checar se o boss deve aparecer
             this.gerenciadorJogo.checarTodosMonstrosMortos();
         }
     }

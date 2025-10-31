@@ -1,20 +1,17 @@
 // JS/fabricas.js
 
-// Importa as classes que a fábrica precisa construir
 import { Monstro, HeroiVeloz, HeroiFuria, HeroiTanque, HeroiMago } from './entidades.js';
 
-// Padrão Factory: Heróis
 export class FabricaHerois {
     criarHeroi(tipo, id) {
-        // Aponta para os nomes de arquivo em português
         const imagens = {
-            veloz: '../IMG/heroi-veloz.png',         // Você precisa criar esta imagem
-            furia: '../IMG/heroi-furia.png',     // Imagem que você enviou
-            tanque: '../IMG/heroi-tanque.png',       // Você precisa criar esta imagem
-            mago: '../IMG/heroi-mago.png'            // Você precisa criar esta imagem
+            veloz: '../IMG/heroi-veloz.png',
+            furia: '../IMG/heroi-furia.png',
+            tanque: '../IMG/heroi-tanque.png',
+            mago: '../IMG/heroi-mago.png'
         };
 
-        // 'tipos' traduzidos
+        // ATUALIZADO: A lógica de 'vida' foi movida para as classes de entidade
         switch (tipo) {
             case 'veloz':
                 return new HeroiVeloz(id, 'Veloz', 'Ataca rápido e evita contra-ataques.', imagens.veloz);
@@ -30,15 +27,15 @@ export class FabricaHerois {
     }
 }
 
+// A FabricaMonstros permanece EXATAMENTE IGUAL
 export class FabricaMonstros {
     criarMonstro(tipo, id) {
-        // Aponta para os nomes exatos das suas imagens
         const imagens = {
-            goblin: '../IMG/monstro-goblin.png',     // Imagem que você enviou
-            ogro: '../IMG/monstro-ogro.png',         // Imagem que você enviou
-            slime: '../IMG/monstro-slime.png',       // Imagem que você enviou
-            esqueleto: '../IMG/monstro-esqueleto.png', // Imagem que você enviou
-            chefe: '../IMG/chefao-demonio.png'       // Imagem que você enviou
+            goblin: '../IMG/monstro-goblin.png',
+            ogro: '../IMG/monstro-ogro.png',
+            slime: '../IMG/monstro-slime.png',
+            esqueleto: '../IMG/monstro-esqueleto.png',
+            chefe: '../IMG/chefao-demonio.png'
         };
 
         switch (tipo) {

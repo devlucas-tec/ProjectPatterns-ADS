@@ -1,7 +1,7 @@
 // JS/ui.js
-// Classe estática para manipulação do DOM
 
 export class GerenciadorUI {
+    // ATUALIZADO: Adiciona a barra de vida do herói
     static renderizarHeroi(heroi) {
         const containerHerois = document.getElementById('hero-container');
         const cartao = document.createElement('div');
@@ -11,6 +11,9 @@ export class GerenciadorUI {
         cartao.innerHTML = `
             <img src="${heroi.imagem}" alt="${heroi.nome}">
             <h3>${heroi.nome}</h3>
+            <div class="barra-vida barra-vida-heroi">
+                <div class="barra-vida-interna barra-vida-interna-heroi"></div>
+            </div>
             <p>${heroi.descricao}</p>
         `;
         containerHerois.appendChild(cartao);
@@ -32,6 +35,7 @@ export class GerenciadorUI {
         containerMonstros.appendChild(cartao);
     }
 
+    // ... (restante da classe GerenciadorUI permanece o mesmo) ...
     static destacarHeroiSelecionado(idHeroi) {
         document.querySelectorAll('#hero-selection .card').forEach(cartao => {
             cartao.classList.remove('selected');

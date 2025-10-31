@@ -1,12 +1,11 @@
 // JS/fachada.js
 import { GerenciadorUI } from './ui.js';
-import { HeroiTanque } from './entidades.js'; // Importa para checar 'instanceof'
+import { HeroiTanque } from './entidades.js';
 
-// Padrão Facade: Simplifica a complexidade do combate
 export class FachadaCombate {
     constructor(gerenciadorJogo, gerenciadorSom) {
-        this.gerenciadorJogo = gerenciadorJogo; // Injeção de Dependência
-        this.gerenciadorSom = gerenciadorSom; // Injeção de Dependência
+        this.gerenciadorJogo = gerenciadorJogo;
+        this.gerenciadorSom = gerenciadorSom;
     }
 
     executarAtaque(idMonstro) {
@@ -17,7 +16,12 @@ export class FachadaCombate {
             alert("Por favor, selecione um herói primeiro!");
             return;
         }
-        if (!monstro || !monstro.estaVivo) return; // Não ataca monstros mortos
+        // NOVO: Verifica se o herói ou o monstro estão vivos
+        if (!heroi.estaVivo) {
+            alert(heroi.nome + " está fora de combate!");
+            return;
+        }
+        if (!monstro || !monstro.estaVivo) return;
 
         const detalhesAtaque = heroi.obterDetalhesAtaque();
         
@@ -25,22 +29,23 @@ export class FachadaCombate {
         monstro.receberDano(detalhesAtaque.dano);
         this.gerenciadorSom.tocarSom('monster-hit');
 
-        // 2. Herói sofre dano de Recuo (se aplicável)
+        // 2. Herói sofre dano de Recuo (ex: Fúria)
         if (detalhesAtaque.recuo > 0) {
-            GerenciadorUI.mostrarEfeitoDano(heroi.id, 'damage-recoil');
+            // ATUALIZADO: Chama o método receberDano do herói
+            heroi.receberDano(detalhesAtaque.recuo, 'damage-recoil'); // Passa o efeito 'recoil'
             this.gerenciadorSom.tocarSom('hero-recoil');
         }
 
-        // 3. Monstro contra-ataca (se vivo e o herói não evitar)
+        // 3. Monstro contra-ataca (Dano que o monstro devolve)
         if (monstro.estaVivo && !detalhesAtaque.evitaContraAtaque) {
             let danoContraAtaque = monstro.danoBase;
 
-            // Lógica do Tank (depende da classe HeroiTanque)
             if (heroi instanceof HeroiTanque) {
                 danoContraAtaque = Math.max(0, danoContraAtaque - heroi.defesa);
             }
             
-            GerenciadorUI.mostrarEfeitoDano(heroi.id, 'damage-hit');
+            // ATUALIZADO: Chama o método receberDano do herói
+            heroi.receberDano(danoContraAtaque, 'damage-hit'); // Passa o efeito 'hit'
             this.gerenciadorSom.tocarSom('hero-hit');
         }
     }

@@ -1,16 +1,15 @@
 // JS/main.js
 
-// Importa todas as peças traduzidas, referenciando os arquivos .js
 import { GerenciadorJogo, GerenciadorSom } from './gerenciadores.js';
 import { FabricaHerois, FabricaMonstros } from './fabricas.js';
-import { ObservadorVidaUI, ObservadorLogicaJogo } from './observadores.js';
+// ATUALIZADO: Importa o novo observador de herói
+import { ObservadorVidaUI, ObservadorLogicaJogo, ObservadorVidaHeroiUI } from './observadores.js';
 import { FachadaCombate } from './fachada.js';
 import { GerenciadorUI } from './ui.js';
 
-// Ponto de Entrada da Aplicação (main)
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Inicialização e Injeção de Dependência (DI) ---
+    // --- 1. Inicialização e DI ---
     
     const gerenciadorJogo = GerenciadorJogo.obterInstancia();
     const gerenciadorSom = GerenciadorSom.obterInstancia();
@@ -20,16 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const observadorLogicaJogo = new ObservadorLogicaJogo(gerenciadorJogo);
     let musicaIniciada = false;
 
-    // --- 2. Criação de Entidades (Usando Factories) ---
-
-    // Usa os tipos em português
+    // --- 2. Criação de Entidades ---
     const herois = [
         fabricaHerois.criarHeroi('veloz', 'hero-1'),
         fabricaHerois.criarHeroi('furia', 'hero-2'),
         fabricaHerois.criarHeroi('tanque', 'hero-3'),
         fabricaHerois.criarHeroi('mago', 'hero-4')
     ];
-    // Usa os tipos em português
     const monstros = [
         fabricaMonstros.criarMonstro('goblin', 'monster-1'),
         fabricaMonstros.criarMonstro('ogro', 'monster-2'),
@@ -43,6 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     herois.forEach(heroi => {
         gerenciadorJogo.registrarHeroi(heroi);
         GerenciadorUI.renderizarHeroi(heroi);
+        
+        // NOVO: Adiciona o observador de UI para a vida do herói
+        heroi.adicionarObservador(new ObservadorVidaHeroiUI(heroi.id));
     });
 
     monstros.forEach(monstro => {
@@ -57,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chefe.adicionarObservador(new ObservadorVidaUI(chefe.id, gerenciadorSom));
 
     // --- 4. Configuração dos Event Listeners ---
+    // (Esta seção permanece EXATAMENTE IGUAL)
 
     document.getElementById('hero-container').addEventListener('click', (e) => {
         if (!musicaIniciada) {
@@ -66,7 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const cartao = e.target.closest('.card');
         if (cartao) {
-            gerenciadorJogo.definirHeroiSelecionado(cartao.dataset.idHeroi);
+            // SÓ PERMITE SELECIONAR O HERÓI SE ELE ESTIVER VIVO
+            const heroi = gerenciadorJogo.herois.find(h => h.id === cartao.dataset.idHeroi);
+            if (heroi && heroi.estaVivo) {
+                gerenciadorJogo.definirHeroiSelecionado(cartao.dataset.idHeroi);
+            }
         }
     });
 
