@@ -1,5 +1,3 @@
-// JS/fabricas.js
-
 import { Monstro, HeroiVeloz, HeroiFuria, HeroiTanque, HeroiMago } from './entidades.js';
 
 export class FabricaHerois {
@@ -11,7 +9,6 @@ export class FabricaHerois {
             mago: '../IMG/heroi-mago.png'
         };
 
-        // ATUALIZADO: A lógica de 'vida' foi movida para as classes de entidade
         switch (tipo) {
             case 'veloz':
                 return new HeroiVeloz(id, 'Veloz', 'Ataca rápido e evita contra-ataques.', imagens.veloz);
@@ -27,7 +24,6 @@ export class FabricaHerois {
     }
 }
 
-// A FabricaMonstros permanece EXATAMENTE IGUAL
 export class FabricaMonstros {
     criarMonstro(tipo, id) {
         const imagens = {
@@ -40,15 +36,15 @@ export class FabricaMonstros {
 
         switch (tipo) {
             case 'goblin':
-                return new Monstro(id, 'Goblin', 80, imagens.goblin, 5);
+                return new Monstro(id, 'Goblin', 80, imagens.goblin, 5, 'goblin-hit', 'goblin-morte');
             case 'ogro':
-                return new Monstro(id, 'Ogro', 120, imagens.ogro, 10);
+                return new Monstro(id, 'Ogro', 120, imagens.ogro, 10, 'ogro-hit', 'ogro-morte');
             case 'slime':
-                return new Monstro(id, 'Slime', 60, imagens.slime, 3);
+                return new Monstro(id, 'Slime', 60, imagens.slime, 3, 'slime-hit', 'slime-morte');
             case 'esqueleto':
-                return new Monstro(id, 'Esqueleto', 100, imagens.esqueleto, 8);
+                return new Monstro(id, 'Esqueleto', 100, imagens.esqueleto, 8, 'esqueleto-hit', 'esqueleto-morte');
             case 'chefe':
-                return new Monstro(id, 'Rei Demônio', 500, imagens.chefe, 25);
+                return new Monstro(id, 'Rei Demônio', 500, imagens.chefe, 25, 'chefe-hit', 'chefe-morte');
             default:
                 throw new Error('Tipo de monstro desconhecido');
         }

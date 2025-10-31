@@ -1,25 +1,26 @@
-// JS/main.js
-
 import { GerenciadorJogo, GerenciadorSom } from './gerenciadores.js';
 import { FabricaHerois, FabricaMonstros } from './fabricas.js';
-// ATUALIZADO: Importa o novo observador de herói
 import { ObservadorVidaUI, ObservadorLogicaJogo, ObservadorVidaHeroiUI } from './observadores.js';
 import { FachadaCombate } from './fachada.js';
 import { GerenciadorUI } from './ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Inicialização e DI ---
-    
     const gerenciadorJogo = GerenciadorJogo.obterInstancia();
     const gerenciadorSom = GerenciadorSom.obterInstancia();
     const fachadaCombate = new FachadaCombate(gerenciadorJogo, gerenciadorSom);
     const fabricaHerois = new FabricaHerois();
     const fabricaMonstros = new FabricaMonstros();
     const observadorLogicaJogo = new ObservadorLogicaJogo(gerenciadorJogo);
-    let musicaIniciada = false;
+    
+    let audioLiberado = false;
 
-    // --- 2. Criação de Entidades ---
+    function tentarLiberarAudio() {
+        if (audioLiberado) return;
+        gerenciadorSom.iniciarContextoAudio();
+        audioLiberado = true;
+    }
+
     const herois = [
         fabricaHerois.criarHeroi('veloz', 'hero-1'),
         fabricaHerois.criarHeroi('furia', 'hero-2'),
@@ -34,14 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const chefe = fabricaMonstros.criarMonstro('chefe', 'boss-1');
 
-    // --- 3. Registro e Aplicação dos Padrões ---
     
     herois.forEach(heroi => {
         gerenciadorJogo.registrarHeroi(heroi);
         GerenciadorUI.renderizarHeroi(heroi);
-        
-        // NOVO: Adiciona o observador de UI para a vida do herói
-        heroi.adicionarObservador(new ObservadorVidaHeroiUI(heroi.id));
+        heroi.adicionarObservador(new ObservadorVidaHeroiUI(heroi.id, gerenciadorSom));
     });
 
     monstros.forEach(monstro => {
@@ -55,26 +53,23 @@ document.addEventListener('DOMContentLoaded', () => {
     GerenciadorUI.renderizarMonstro(chefe, 'boss-container');
     chefe.adicionarObservador(new ObservadorVidaUI(chefe.id, gerenciadorSom));
 
-    // --- 4. Configuração dos Event Listeners ---
-    // (Esta seção permanece EXATAMENTE IGUAL)
-
     document.getElementById('hero-container').addEventListener('click', (e) => {
-        if (!musicaIniciada) {
-            gerenciadorSom.iniciarMusica();
-            musicaIniciada = true;
-        }
+        tentarLiberarAudio();
         
         const cartao = e.target.closest('.card');
         if (cartao) {
-            // SÓ PERMITE SELECIONAR O HERÓI SE ELE ESTIVER VIVO
             const heroi = gerenciadorJogo.herois.find(h => h.id === cartao.dataset.idHeroi);
+            
             if (heroi && heroi.estaVivo) {
                 gerenciadorJogo.definirHeroiSelecionado(cartao.dataset.idHeroi);
+                gerenciadorSom.tocarMusica(heroi.musicaTema);
             }
         }
     });
 
     const ouvinteAtaque = (e) => {
+        tentarLiberarAudio(); 
+        
         if (e.target.classList.contains('btn-atacar')) {
             fachadaCombate.executarAtaque(e.target.dataset.monsterId);
         }

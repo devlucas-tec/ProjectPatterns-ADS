@@ -1,9 +1,7 @@
-// JS/entidades.js
 import { Observavel } from './observadores.js';
 
-// O Monstro é um "Observavel" (sem alterações)
 export class Monstro extends Observavel {
-    constructor(id, nome, vidaMaxima, imagem, danoBase) {
+    constructor(id, nome, vidaMaxima, imagem, danoBase, somHit, somMorte) {
         super();
         this.id = id;
         this.nome = nome;
@@ -12,39 +10,45 @@ export class Monstro extends Observavel {
         this.imagem = imagem;
         this.danoBase = danoBase;
         this.estaVivo = true;
+        
+        this.somHit = somHit;
+        this.somMorte = somMorte;
     }
 
     receberDano(quantidade) {
         if (!this.estaVivo) return;
         this.vidaAtual = Math.max(0, this.vidaAtual - quantidade);
-        
+
         this.notificar({ 
             tipo: 'ATUALIZACAO_VIDA', 
             monstro: this,
-            quantidadeDano: quantidade 
+            quantidadeDano: quantidade,
+            som: this.somHit 
         });
 
         if (this.vidaAtual === 0) {
             this.estaVivo = false;
-            this.notificar({ tipo: 'MORTE', monstro: this });
+            this.notificar({ 
+                tipo: 'MORTE', 
+                monstro: this,
+                som: this.somMorte 
+            });
         }
     }
 }
 
-// --- Heróis ---
-
-// Heroi agora também é um Observavel (sem alterações na base)
 export class Heroi extends Observavel {
-    constructor(id, nome, descricao, imagem, vidaMaxima) {
+    constructor(id, nome, descricao, imagem, vidaMaxima, musicaTema) {
         super();
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.imagem = imagem;
-        
         this.vidaMaxima = vidaMaxima;
         this.vidaAtual = vidaMaxima;
         this.estaVivo = true;
+        
+        this.musicaTema = musicaTema;
     }
 
     receberDano(quantidade, tipoEfeito = 'damage-hit') {
@@ -68,45 +72,36 @@ export class Heroi extends Observavel {
     }
 }
 
-// Subclasses com nova lógica
 export class HeroiVeloz extends Heroi {
     constructor(id, nome, descricao, imagem) {
-        super(id, nome, descricao, imagem, 50); // Vida baixa
+        super(id, nome, descricao, imagem, 80, 'tema-veloz'); 
     }
     obterDetalhesAtaque() {
-        // ATUALIZADO: Veloz tem chance de desviar de contra-ataques
-        return { dano: 15, recuo: 0.1, chanceDesvio: 0.1 }; // 10% de chance de desviar
+        return { dano: 15, recuo: 0, chanceDesvio: 0.4 };
     }
 }
-
-export class HeroiFuria extends Heroi { 
+export class HeroiFuria extends Heroi {
     constructor(id, nome, descricao, imagem) {
-        super(id, nome, descricao, imagem, 100); // Vida média
+        super(id, nome, descricao, imagem, 100, 'tema-furia'); 
     }
     obterDetalhesAtaque() {
-        // ATUALIZADO: Fúria dá muito dano, mas sempre toma 10 de recuo e não desvia
         return { dano: 40, recuo: 10, chanceDesvio: 0 };
     }
 }
-
 export class HeroiTanque extends Heroi {
     constructor(id, nome, descricao, imagem) {
-        super(id, nome, descricao, imagem, 150); // Vida alta
-        this.defesa = 10; // NOVA: Propriedade de defesa
+        super(id, nome, descricao, imagem, 150, 'tema-tanque');
     }
     obterDetalhesAtaque() {
-        // ATUALIZADO: Tanque tem defesa contra contra-ataques
-        return { dano: 20, recuo: 5, chanceDesvio: 0, defesa: this.defesa };
+        return { dano: 20, recuo: 5, chanceDesvio: 0, defesa: 10 };
     }
 }
-
 export class HeroiMago extends Heroi {
     constructor(id, nome, descricao, imagem) {
-        super(id, nome, descricao, imagem, 70); // Vida média/baixa
+        super(id, nome, descricao, imagem, 90, 'tema-mago');
     }
     obterDetalhesAtaque() {
-        // ATUALIZADO: Mago é mais equilibrado, dano variável
-        const dano = Math.floor(Math.random() * 25) + 15; // Dano entre 15 e 39
-        return { dano: dano, recuo: 0, chanceDesvio: 0 }; // Nenhum desvio por padrão
+        const dano = Math.floor(Math.random() * 25) + 15;
+        return { dano: dano, recuo: 7, chanceDesvio: 0 };
     }
 }

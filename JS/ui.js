@@ -1,7 +1,5 @@
-// JS/ui.js
-
 export class GerenciadorUI {
-    // ATUALIZADO: Adiciona a barra de vida do herói
+
     static renderizarHeroi(heroi) {
         const containerHerois = document.getElementById('hero-container');
         const cartao = document.createElement('div');
@@ -35,7 +33,6 @@ export class GerenciadorUI {
         containerMonstros.appendChild(cartao);
     }
 
-    // ... (restante da classe GerenciadorUI permanece o mesmo) ...
     static destacarHeroiSelecionado(idHeroi) {
         document.querySelectorAll('#hero-selection .card').forEach(cartao => {
             cartao.classList.remove('selected');
