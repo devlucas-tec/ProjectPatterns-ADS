@@ -91,9 +91,10 @@ export class HeroiFuria extends Heroi {
 export class HeroiTanque extends Heroi {
     constructor(id, nome, descricao, imagem) {
         super(id, nome, descricao, imagem, 150, 'tema-tanque');
+        this.defesa = 0.7;
     }
     obterDetalhesAtaque() {
-        return { dano: 20, recuo: 5, chanceDesvio: 0, defesa: 10 };
+        return { dano: 20, recuo: 5, chanceDesvio: 0, defesa: this.defesa };
     }
 }
 export class HeroiMago extends Heroi {
