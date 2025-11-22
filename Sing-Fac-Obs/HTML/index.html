@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padrões de Projeto Simples</title>
+    <link rel="stylesheet" href="/CSS/styles.css"> 
+</head>
+<body>
+
+    <header>
+        <h1>Sistema de E-commerce Demo - Padrões de Projeto</h1>
+    </header>
+
+    <div class="container">
+        <section class="controls">
+            <h2>1. Criar Novo Pedido (Estado Pendente)</h2>
+            <div style="margin-bottom: 10px;">
+                <label for="orderValue">Valor do Pedido (R$):</label>
+                <input type="number" id="orderValue" value="150.00" min="0.01" step="0.01">
+            </div>
+            
+            <button onclick="realizarPedidoDemo()">Criar Pedido PENDENTE</button>
+            <p><strong>Demonstração:</strong> Pedido criado com ID e valor. O sistema de notificação (Observer) é ativado.</p>
+        </section>
+
+        <hr>
+
+        <section class="status-area controls">
+            <h2>📦 Status Atual do Pedido</h2>
+            <p id="orderStatus"><strong>Status:</strong> Nenhum pedido pendente.</p>
+        </section>
+
+        <section class="controls" id="paymentControls" style="display: none;">
+            <h2>2. Pagar Pedido Pendente (Orquestração Facade)</h2>
+            <label for="paymentMethodPay">Método de Pagamento:</label>
+            <select id="paymentMethodPay">
+                <option value="cartao">Cartão de Crédito</option>
+                <option value="boleto">Boleto Bancário</option>
+                <option value="pix">PIX</option>
+                <option value="especie">Espécie</option>
+            </select>
+            
+            <button onclick="pagarPedidoPendenteDemo()">Pagar Pedido</button>
+            <p><strong>Demonstração:</strong> O Facade orquestra a Fábrica (Factory), Injeção de Dependência (DI) e Notificação (Observer) para finalizar a transação.</p>
+        </section>
+
+        <hr>
+
+        <section class="log-area">
+            <h2>📢 Log de Eventos (Padrão Observer)</h2>
+            <div id="notifications" class="notification-box">
+            </div>
+        </section>
+
+        <section class="singleton-area">
+            <h2>⚙️ Configuração Global (Padrão Singleton)</h2>
+            <p id="singletonInfo">Carregando...</p>
+        </section>
+    </div>
+
+    <script src="/JS/app.js"></script>
+</body>
+</html>
